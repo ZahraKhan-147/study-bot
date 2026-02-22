@@ -10,6 +10,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from bson import ObjectId
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load environment variables
 load_dotenv()
@@ -34,7 +35,21 @@ llm = ChatGroq(
     groq_api_key=groq_api_key
 )
 # --- FastAPI App ---
-app = FastAPI(title="Study Bot API")
+app = FastAPI(
+    title="Study Bot API",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- Pydantic Models ---
 class ChatRequest(BaseModel):
